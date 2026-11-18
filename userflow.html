@@ -1,0 +1,38 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>PnP Picks Uploader – User Flow</title>
+<style>
+body{margin:0;background:#fff;font:17px/1.4 Segoe UI,Arial;color:#111}
+.wrap{width:1280px;height:720px;transform:scale(0.80);transform-origin:top left;padding:28px 40px;box-sizing:border-box;position:relative}
+h1{margin:0 0 6px;font-size:28px}.sub{color:#555;margin-bottom:18px}
+.lane{border:2px dashed #bbb;border-radius:12px;padding:12px 16px 14px;margin-bottom:14px}
+.lane h3{margin:0 0 10px;font-size:16px;color:#444}
+.row{display:flex;align-items:center;gap:12px}
+.step{border:3px solid #1a56db;border-radius:10px;padding:10px 12px;width:215px;min-height:78px;background:#eef3ff;box-sizing:border-box;font-size:14px}
+.step b{display:block;font-size:15px;margin-bottom:3px}
+.once{border-color:#059669;background:#ecfdf5}.yt{border-color:#dc2626;background:#fef2f2}
+.arr{font-size:26px;color:#444}
+</style></head><body><div class="wrap">
+<h1>PnP Picks Uploader – User Flow</h1>
+<div class="sub">The only "user" is the channel owner. Viewers never interact with the API client; they only watch the published videos on YouTube.</div>
+
+<div class="lane"><h3>A. One-time setup (channel owner, once)</h3>
+<div class="row">
+ <div class="step once"><b>1. Run <code>node upload.js auth</code></b>Tool prints a Google OAuth consent URL</div><div class="arr">→</div>
+ <div class="step once"><b>2. Google consent screen</b>Owner signs in with the PnP Picks brand account and clicks Allow (scopes: youtube.upload, youtube.readonly)</div><div class="arr">→</div>
+ <div class="step once"><b>3. Token stored locally</b>Refresh token saved in a gitignored .env on the owner's PC. Revocable any time in Google Account permissions.</div>
+</div></div>
+
+<div class="lane"><h3>B. Automatic run per slot (Windows Task Scheduler, every 30 min; slots 12:30 and 19:00 IST)</h3>
+<div class="row">
+ <div class="step"><b>1. Pick deals</b>Read today's posts from our own public Telegram channels; choose 1 or 3 (no repeats within 3 days)</div><div class="arr">→</div>
+ <div class="step"><b>2. Build video</b>Voice-over + text cards + product photo → short.mp4 (1080×1920, 15–40 s)</div><div class="arr">→</div>
+ <div class="step yt"><b>3. videos.insert</b>Upload to our own channel: title, description (deals, Telegram links, affiliate disclosure), notForKids, privacy = private, publishAt = slot time</div><div class="arr">→</div>
+ <div class="step"><b>4. Record result</b>Video ID written to uploaded.json so the same slot is never uploaded twice; quota.json caps API uploads at 6/day</div><div class="arr">→</div>
+ <div class="step yt"><b>5. Public at slot time</b>YouTube publishes the scheduled Short; viewers watch it normally on YouTube</div>
+</div></div>
+
+<div class="lane" style="margin-bottom:0"><h3>C. Owner review (optional, daily)</h3>
+<div class="row">
+ <div class="step"><b>Check YouTube Studio</b>Owner can edit title/description or delete the video like any manually uploaded video. No other API calls are made.</div>
+</div></div>
+</div></body></html>
